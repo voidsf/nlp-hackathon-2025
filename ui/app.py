@@ -73,7 +73,8 @@ with ui.div(id="main-content"):
         
         ui.h3("Timeline")
         with ui.layout_columns():
-            ui.remove_ui("#timeline")
+            for point in timeline:
+                ui.remove_ui("#timeline")
             for point in timeline:
                 ui.input_action_button(str(point[0]), point[1])
                 card = ui.input_action_button(str(point[0]), point[1])
