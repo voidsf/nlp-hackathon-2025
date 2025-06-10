@@ -24,15 +24,29 @@ def init_app():
 
     st.sidebar.header("Filter by Entities")
 
-    selected_people = st.sidebar.multiselect("Select people to focus on:", ["bob", "frank", "dave", "belinda"])
-    selected_orgs = st.sidebar.multiselect("Select organizations to focus on:", ["acme", "globex", "initech", "stark"])
+    print(df['people'])
+    print(df['organizations'])
+
+    all_people = df['people'].explode().dropna().unique().tolist()
+    all_orgs = df['organizations'].explode().dropna().unique().tolist()
+
+    selected_people = st.sidebar.multiselect("Select people to focus on:", all_people)
+    selected_orgs = st.sidebar.multiselect("Select organizations to focus on:", all_orgs)
+
+    filtered_df = df.copy()
+
+    if selected_people:
+        filtered_df = filtered_df[filtered_df['people'].apply(lambda people_list: any(p in people_list for p in selected_people))]
+    if selected_orgs:
+        filtered_df = filtered_df[filtered_df['organizations'].apply(lambda org_list: any(o in org_list for o in selected_orgs))]
+
 
     st.header("Event Timeline")
     
     fig = px.timeline(
-            df,
+            filtered_df,
             x_start="timestamp",
-            x_end=df['timestamp'] + pd.Timedelta(minutes=120),
+            x_end=filtered_df['timestamp'] + pd.Timedelta(minutes=120),
             y="sentiment_category",
             color='sentiment',          # This line will now work correctly
             color_continuous_scale='RdBu_r', # Use a Red-to-Blue color scale
@@ -43,7 +57,11 @@ def init_app():
     fig.update_yaxes(visible=False, showticklabels=False)
     st.plotly_chart(fig, use_container_width=True)
 
+    # 2. Create the Data Table
     st.header("Filtered Articles & Data")
+    # Define columns to show, including the new sentiment score
+    display_columns = ['timestamp', 'summary', 'sentiment', 'people', 'organizations', 'url']
+    st.dataframe(filtered_df[display_columns])
 
 if __name__ == "__main__":
     init_app()

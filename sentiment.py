@@ -84,12 +84,13 @@ def package_articles_with_sentiment_info(dataframe: pd.DataFrame):
     """
 
     analyze_sentiment(dataframe)
-    
+
+    dataframe['people'] = pd.Series(dtype=object)
+    dataframe['organizations'] = pd.Series(dtype=object)
+
     for index, row in dataframe.iterrows():
         entities = extract_entities(row['summary'])
 
-        dataframe['people'] = pd.Series(dtype=object)
-        dataframe['organizations'] = pd.Series(dtype=object)
 
         dataframe.at[index, 'people'] = entities['people']
         dataframe.at[index, 'organizations'] = entities['organizations']
