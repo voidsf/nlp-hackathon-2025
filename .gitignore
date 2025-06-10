@@ -1,3 +1,4 @@
 .venv
 .env
 cached_data.csv
+__pycache__
