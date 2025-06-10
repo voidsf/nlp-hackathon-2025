@@ -89,10 +89,13 @@ def test_data_eval():
     batch_eval(left_wing_statements + right_wing_statements)
     
 if __name__ == "__main__":
+    query_text = "Elon Musk"
+    article_no = 20
+    
     request_tries = 5
     for i in range(request_tries):
         try:
-            df = fetch_and_process_data("Elon Musk", 20)
+            df = fetch_and_process_data(query_text, article_no)
             print(df)
             print(df.columns.tolist())
             break
