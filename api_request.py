@@ -64,6 +64,16 @@ def get_data(query: str, results: int):
     return df
 
 def fetch_and_process_data(query_text, result_size):
+    """
+    Fetches data from the API and processes it, with caching functionality.
+    
+    Args:
+        query_text (str): The query text to search for.
+        result_size (int): The number of results to return.
+        
+    Returns:
+        pd.DataFrame: A DataFrame containing the results of the query.
+    """
 
     csv_path = "cache.csv"
 
