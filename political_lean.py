@@ -27,7 +27,6 @@ def batch_eval(texts):
     probabilities = softmax(logits, dim=1)
     scores = probabilities[range(len(texts)), political_leanings].tolist()
     
-    
     leanings = ["Left", "Center", "Right"]
 
     for text, leaning, score in zip(texts, political_leanings.tolist(), scores):
