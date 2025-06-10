@@ -3,6 +3,12 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from torch.nn.functional import softmax
 import pandas as pd
 
+# Model attribution: 
+# Volf, M. and Simko, J. (2025). Predicting political leaning and politicalness 
+# of text using transformer models. DELTA – High school of computer science and 
+# economics, Pardubice, Czechia; Kempelen Institute of Intelligent Technologies,
+# Bratislava, Slovakia.
+
 tokenizer = AutoTokenizer.from_pretrained("launch/POLITICS")
 model = AutoModelForSequenceClassification.from_pretrained("matous-volf/political-leaning-politics")
 
@@ -19,6 +25,17 @@ def example_eval():
     print(political_leaning, score)
     
 def batch_eval(texts):
+    """Evaluate political lean from a string, returning whether text if left, 
+        right or center leaning
+
+    Args:
+        texts (list[string]): List of strings to evaluate
+
+    Returns:
+        df (pd.Dataframe): Dataframe containing the evaluated texts, the political 
+        leaning of each text, and the confidence the model has in each assertion. 
+    """
+    
     tokens = tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
     output = model(**tokens)
     logits = output.logits
