@@ -32,6 +32,14 @@ def batch_eval(texts):
 
     for text, leaning, score in zip(texts, political_leanings.tolist(), scores):
         print(f"Text: {text}\nPredicted leaning: {leanings[leaning]}, Score: {score}\n")
+        
+    df = pd.Dataframe({
+        "texts": texts, 
+        "leaning": political_leanings,
+        "confidence": score
+    })
+    
+    return df
     
 def test_data_eval():
     left_wing_statements = [
