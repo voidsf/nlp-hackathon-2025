@@ -1,5 +1,6 @@
 from shiny import reactive
 from shiny.express import input, render, ui
+import asyncio
 
 # setup
 results = None
@@ -47,10 +48,17 @@ with ui.div(id="main-content"):
         pass
 
     @reactive.effect
-    def get_results():
+    async def get_results():
         if input.search() != "Enter text...":
         
-            # get results from API
+            with ui.Progress(min=1, max=15) as p:
+                p.set(message="Calculation in progress", detail="This may take a while...")
+
+                for i in range(1, 15):
+                    p.set(i, message="Computing")
+                    await asyncio.sleep(0.1)
+
+            ui.remove_ui("#value")
 
             global results
             global titles
@@ -84,32 +92,24 @@ with ui.div(id="main-content"):
                     where="beforeEnd",
                 )
 
+    with ui.layout_columns():
+        with ui.card():
+            "Card 1"
+        with ui.card():
+            "Card 2"
+        with ui.card():
+            "Card 3"
+            
     # text return
     @render.text
     def value():
         return input.text()
+    
+    
 
     # button
     # ui.input_action_button("btnl", "Trigger insert/remove ui")    
-    
 
-    # Another way of adding dynamic content is with ui.insert_ui() and ui.remove_ui().
-    # The insertion is imperative, so, compared to @render.ui, more care is needed to
-    # make sure you don't add multiple copies of the content.
-    @reactive.effect
-    def _():
-        btn = input.btnl()
-        if btn % 2 == 1:
-            slider = ui.input_slider(
-                "n2", "This slider is inserted with ui.insert_ui()", 0, 100, 20
-            )
-            ui.insert_ui(
-                ui.div({"id": "inserted-slider"}, slider),
-                selector="#main-content",
-                where="beforeEnd",
-            )
-        elif btn > 0:
-            ui.remove_ui("#inserted-slider")
 
 
 def list_to_dict(array):
