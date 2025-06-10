@@ -44,8 +44,7 @@ def get_data(query: str, results: int):
     payload = {
     "query_text": query,
     "result_size": results,
-    "include_highlights":True,
-    "ai_answer": "basic"
+    "include_highlights":True
     }
 
     print("making request")
@@ -63,3 +62,49 @@ def get_data(query: str, results: int):
 
     
     return df
+
+def fetch_and_process_data(query_text, result_size):
+
+    try:
+        cache_df = pd.read_csv("cache.csv")
+        if len(cache_df[cache_df["query"] == query_text]) > 0:
+            print("cached result found ")
+            return cache_df[cache_df["query"] == query_text]
+    except:
+        print("no file exists at 'cache.csv', continuing to make request")
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY
+    }
+    payload = {
+      "query_text": query_text,
+      "result_size": result_size,
+      "include_highlights": True
+    }
+
+    try:
+        response = requests.post(API_URL, headers=headers, data=json.dumps(payload), timeout=30) # Add timeout
+        response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+        json_response = response.json()
+
+        if 'results' in json_response:
+            df = pd.json_normalize(json_response['results'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+            df.dropna(subset=['timestamp'], inplace=True)
+            df = df.sort_values(by='timestamp', ascending=True).reset_index(drop=True)
+            df['query'] = query_text
+
+            csv_path = "cache.csv"
+            df.to_csv(csv_path, mode='a', header=not os.path.exists(csv_path), index=False)
+
+            
+            return df
+        else:
+            raise Exception(f"API Response did not contain 'results'. Response: {json_response}")
+    except requests.exceptions.Timeout:
+        raise Exception("API request timed out. Displaying cached data if available, or try a smaller result size.")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Error making API request: {e}. Displaying cached data if available.")
+    except json.JSONDecodeError:
+        raise Exception("Could not decode JSON from API response.")

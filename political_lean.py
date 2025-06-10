@@ -2,7 +2,7 @@ from torch import argmax
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from torch.nn.functional import softmax
 import pandas as pd
-from api_request import get_data
+from api_request import *
 
 # Model attribution: 
 # Volf, M. and Simko, J. (2025). Predicting political leaning and politicalness 
@@ -10,6 +10,7 @@ from api_request import get_data
 # economics, Pardubice, Czechia; Kempelen Institute of Intelligent Technologies,
 # Bratislava, Slovakia.
 
+print("establishing models")
 tokenizer = AutoTokenizer.from_pretrained("launch/POLITICS")
 model = AutoModelForSequenceClassification.from_pretrained("matous-volf/political-leaning-politics")
 
@@ -50,10 +51,10 @@ def batch_eval(texts):
     for text, leaning, score in zip(texts, political_leanings.tolist(), scores):
         print(f"Text: {text}\nPredicted leaning: {leanings[leaning]}, Score: {score}\n")
         
-    df = pd.Dataframe({
+    df = pd.DataFrame({
         "texts": texts, 
         "leaning": political_leanings,
-        "confidence": score
+        "confidence": scores
     })
     
     return df
@@ -90,12 +91,18 @@ def test_data_eval():
 if __name__ == "__main__":
     request_tries = 5
     for i in range(request_tries):
-        try: 
-            df = get_data("Elon Musk", 1)
+        try:
+            df = fetch_and_process_data("Elon Musk", 20)
             print(df)
             print(df.columns.tolist())
             break
-        except Exception: 
-            print("Request timed out")
+        except Exception as e:
+            print(e)
+
+    evaled_df = batch_eval(df["title"].tolist())
+    print(evaled_df)
+    print(len(evaled_df))
+
+
 
     #test_data_eval()
