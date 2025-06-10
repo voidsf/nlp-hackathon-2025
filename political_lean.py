@@ -91,7 +91,7 @@ if __name__ == "__main__":
     request_tries = 5
     for i in range(request_tries):
         try: 
-            df = get_data("Donald Trump", 10)
+            df = get_data("Elon Musk", 1)
             print(df)
             print(df.columns.tolist())
             break

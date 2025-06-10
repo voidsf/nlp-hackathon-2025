@@ -32,19 +32,24 @@ def get_data(query: str, results: int):
         Dataframe: A pandas dataframe containing all data retrieved from the request
     """
     
-    cache_df = pd.read_csv("cache.csv")
-    if len(cache_df[cache_df["query"] == query]) > 0:
-        return cache_df[cache_df["query"] == query]
+    try:
+        cache_df = pd.read_csv("cache.csv")
+        if len(cache_df[cache_df["query"] == query]) > 0:
+            print("cached result found ")
+            return cache_df[cache_df["query"] == query]
+    except:
+        print("no file exists at 'cache.csv', continuing to make request")
 
     # Edit the below to get different data
     payload = {
     "query_text": query,
-    "result_size": 10,
+    "result_size": results,
     "include_highlights":True,
     "ai_answer": "basic"
     }
 
-    response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
+    print("making request")
+    response = requests.post(API_URL, headers=headers, data=json.dumps(payload), timeout=30)
     json_response = response.json()
     
     if json_response['message'] == 'Endpoint request timed out':
