@@ -4,3 +4,4 @@ pandas
 python-dotenv
 pytz
 spacy
+plotly

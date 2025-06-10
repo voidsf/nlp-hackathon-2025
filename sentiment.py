@@ -4,6 +4,7 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 
 # Load the spaCy model for sentiment analysis and entity recognition
+spacy.cli.download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
 
 # Download the VADER lexicon for sentiment analysis
@@ -11,6 +12,21 @@ nltk.download("vader_lexicon")
 
 # Initialize the VADER sentiment intensity analyzer
 sia = SIA()
+
+def sentiment_category(score):
+    """
+    Categorizes the VADER compound score into sentiment groups.
+    """
+    if score <= -0.6:
+        return "very negative"
+    elif score < -0.2:
+        return "negative"
+    elif score <= 0.2:
+        return "neutral"
+    elif score < 0.6:
+        return "positive"
+    else:
+        return "very positive"
 
 def analyze_sentiment(dataframe: pd.DataFrame):
     """
@@ -24,6 +40,8 @@ def analyze_sentiment(dataframe: pd.DataFrame):
     """
 
     dataframe['sentiment'] = dataframe['title'].apply(lambda x: sia.polarity_scores(x)['compound'])
+    dataframe['sentiment_category'] = dataframe['sentiment'].apply(sentiment_category)
+
 
 def extract_entities(text):
     """
@@ -69,6 +87,10 @@ def package_articles_with_sentiment_info(dataframe: pd.DataFrame):
     
     for index, row in dataframe.iterrows():
         entities = extract_entities(row['summary'])
+
+        dataframe['people'] = pd.Series(dtype=object)
+        dataframe['organizations'] = pd.Series(dtype=object)
+
         dataframe.at[index, 'people'] = entities['people']
         dataframe.at[index, 'organizations'] = entities['organizations']
 
