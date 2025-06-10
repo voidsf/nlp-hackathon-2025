@@ -31,6 +31,10 @@ def get_data(query: str, results: int):
     Returns:
         Dataframe: A pandas dataframe containing all data retrieved from the request
     """
+    
+    cache_df = pd.read_csv("cache.csv")
+    if len(cache_df[cache_df["query"] == query]) > 0:
+        return cache_df[cache_df["query"] == query]
 
     # Edit the below to get different data
     payload = {
@@ -46,4 +50,11 @@ def get_data(query: str, results: int):
     if json_response['message'] == 'Endpoint request timed out':
         raise Exception('Endpoint request timed out, try again')
     
-    return pd.json_normalize(json_response)
+    df = pd.json_normalize(json_response)
+    df["query"] = query
+    
+    csv_path = "cache.csv"
+    df.to_csv(csv_path, mode='a', header=not os.path.exists(csv_path), index=False)
+
+    
+    return df

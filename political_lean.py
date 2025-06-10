@@ -2,6 +2,7 @@ from torch import argmax
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from torch.nn.functional import softmax
 import pandas as pd
+from api_request import get_data
 
 # Model attribution: 
 # Volf, M. and Simko, J. (2025). Predicting political leaning and politicalness 
@@ -87,4 +88,14 @@ def test_data_eval():
     batch_eval(left_wing_statements + right_wing_statements)
     
 if __name__ == "__main__":
-    test_data_eval()
+    request_tries = 5
+    for i in range(request_tries):
+        try: 
+            df = get_data("Donald Trump", 10)
+            print(df)
+            print(df.columns.tolist())
+            break
+        except Exception: 
+            print("Request timed out")
+
+    #test_data_eval()
