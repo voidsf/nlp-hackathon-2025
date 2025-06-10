@@ -89,7 +89,7 @@ def test_data_eval():
     batch_eval(left_wing_statements + right_wing_statements)
     
 if __name__ == "__main__":
-    query_text = "Elon Musk"
+    query_text = "Donald Trump"
     article_no = 20
     
     request_tries = 5

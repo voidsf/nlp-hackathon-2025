@@ -65,8 +65,10 @@ def get_data(query: str, results: int):
 
 def fetch_and_process_data(query_text, result_size):
 
+    csv_path = "cache.csv"
+
     try:
-        cache_df = pd.read_csv("cache.csv")
+        cache_df = pd.read_csv(csv_path)
         if len(cache_df[cache_df["query"] == query_text]) > 0:
             print("cached result found ")
             return cache_df[cache_df["query"] == query_text]
@@ -95,7 +97,7 @@ def fetch_and_process_data(query_text, result_size):
             df = df.sort_values(by='timestamp', ascending=True).reset_index(drop=True)
             df['query'] = query_text
 
-            csv_path = "cache.csv"
+            
             df.to_csv(csv_path, mode='a', header=not os.path.exists(csv_path), index=False)
 
             
