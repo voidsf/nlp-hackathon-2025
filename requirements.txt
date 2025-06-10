@@ -2,3 +2,4 @@ requests
 nltk
 pandas
 python-dotenv
+shiny
