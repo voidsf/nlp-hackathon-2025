@@ -1,0 +1,4 @@
+One-Click News Brief: Generate a 3-sentence summary of today's top articles on a given topic.
+Event Timeline Generator:
+World map of news 
+“What's Changed?”
