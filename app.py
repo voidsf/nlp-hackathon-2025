@@ -61,7 +61,7 @@ def init_app():
 
 
     st.title("Newsyfi")
-    st.subheader("Your AI-Powered News Briefing")
+    st.subheader("Your Real-Time Story Tracker")
 
     search_bar = st.sidebar.text_input("Search:", "")
 
