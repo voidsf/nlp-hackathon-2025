@@ -61,17 +61,20 @@ def init_app():
 
     st.title("Event Unfolder: A Real-Time Story Tracker ⏳")
 
+
+    search_bar = st.sidebar.text_input("Search:", "")
+
+
     time_range_options = {"Last 24 Hours": timedelta(days=1), "Last 7 Days": timedelta(days=7), "Last 30 Days": timedelta(days=30), "All Time": None}
     selected_range_label = st.sidebar.radio("Time Range:", options=list(time_range_options.keys()))
 
     delta = time_range_options[selected_range_label]
 
-
-    search_bar = st.sidebar.text_input("Search:", "")
     if search_bar:
         df = get_display_data(search_bar, datetime.now() - delta if delta else None)
     else:
         df = get_display_data("Cake recipes", datetime.now() - delta if delta else None)
+
 
 
     print(selected_range_label)
