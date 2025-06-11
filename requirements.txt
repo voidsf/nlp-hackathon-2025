@@ -2,3 +2,7 @@ requests
 nltk
 pandas
 python-dotenv
+pytz
+spacy
+plotly
+streamlit
