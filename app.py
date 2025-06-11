@@ -26,11 +26,12 @@ def get_display_data(query, filter):
 
     ...
 
-def get_ai_summary(articles_text):
+def get_ai_summary(query, articles_text):
 
     prompt = f"""
-
-
+    Please give me a concise overall summary of the following news article summaries, staying broadly on topic.
+    Preface with 'Here's a summary of the latest news articles on '{query}', or similar.
+    Aim for two or three paragraphs.
     News Summaries:
     {articles_text}
     """
@@ -59,8 +60,8 @@ def init_app():
     st.set_page_config(layout="wide")
 
 
-    st.title("Event Unfolder: A Real-Time Story Tracker ⏳")
-
+    st.title("Newsyfi")
+    st.subheader("Your AI-Powered News Briefing")
 
     search_bar = st.sidebar.text_input("Search:", "")
 
@@ -112,7 +113,7 @@ def init_app():
     if st.button("✨ Generate Briefing"):
         with st.spinner("The AI analyst is reviewing the articles..."):
             text_to_summarize = "\n".join(filtered_df['summary'].head(20).tolist())
-            st.info(get_ai_summary(text_to_summarize))
+            st.info(get_ai_summary(search_bar if search_bar else "Cake recipes", text_to_summarize))
 
             #st.session_state.summary = get_ai_summary(text_to_summarize)
 
