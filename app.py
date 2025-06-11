@@ -112,10 +112,12 @@ def init_app():
     if st.button("✨ Generate Briefing"):
         with st.spinner("The AI analyst is reviewing the articles..."):
             text_to_summarize = "\n".join(filtered_df['summary'].head(20).tolist())
-            st.session_state.summary = get_ai_summary(text_to_summarize)
+            st.info(get_ai_summary(text_to_summarize))
 
-    if 'summary' in st.session_state:
-        st.info(st.session_state.summary)
+            #st.session_state.summary = get_ai_summary(text_to_summarize)
+
+    # if 'summary' in st.session_state:
+    #     st.info(st.session_state.summary)
     st.divider()
 
 
