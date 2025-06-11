@@ -41,20 +41,20 @@ with ui.div(id="main-content"):
             {"Days": "Days", "Months": "Months", "Years": "Years"}
         )  
 
-    with ui.div(id="titles-content"):
-        pass
+    d = ui.div(id="titles-content")
+    d.add_style("display: flex; justify-content: center;")
 
-    with ui.div(id="timeline-content"):
-        pass
+    d = ui.div(id="timeline-content")
+    d.add_style("display: flex; justify-content: center; gap: 10px;")
 
     @reactive.effect
     async def get_results():
         if input.search() != "Enter text...":
         
-            with ui.Progress(min=1, max=15) as p:
+            with ui.Progress(min=1, max=3) as p:
                 p.set(message="Calculation in progress", detail="This may take a while...")
 
-                for i in range(1, 15):
+                for i in range(1, 3):
                     p.set(i, message="Computing")
                     await asyncio.sleep(0.1)
 
@@ -80,25 +80,16 @@ with ui.div(id="main-content"):
         timeline = get_timeline_from_title(input.title_select())
         
         ui.h3("Timeline")
-        with ui.layout_columns():
-            for point in timeline:
+        for point in timeline:
                 ui.remove_ui("#timeline")
-            for point in timeline:
-                ui.input_action_button(str(point[0]), point[1])
-                card = ui.input_action_button(str(point[0]), point[1])
-                ui.insert_ui(
-                    ui.div({"id": "timeline"}, card),
-                    selector="#timeline-content",
-                    where="beforeEnd",
-                )
-
-    with ui.layout_columns():
-        with ui.card():
-            "Card 1"
-        with ui.card():
-            "Card 2"
-        with ui.card():
-            "Card 3"
+        for point in timeline:
+            card = ui.input_action_button(str(point[0]), point[1])
+            # img = {"src": "arrow.png", "width": "100px"}
+            ui.insert_ui(
+                ui.div({"id": "timeline"}, card),
+                selector="#timeline-content",
+                where="beforeEnd",
+            )
             
     # text return
     @render.text
