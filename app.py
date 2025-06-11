@@ -60,8 +60,12 @@ def init_app():
     st.set_page_config(layout="wide")
 
 
-    st.title("Newsyfi")
+    st.image("image.png", width=300)
+
+    
     st.subheader("Your Real-Time Story Tracker")
+
+    
 
     search_bar = st.sidebar.text_input("Search:", "")
 
@@ -188,7 +192,7 @@ def init_app():
 
     # Using st.dataframe with on_select for a cleaner, read-only interactive table
     selection = st.dataframe(
-        filtered_df[['timestamp', 'summary', 'sentiment', 'people', 'organizations', 'url']],
+        filtered_df[['timestamp', 'summary', 'people', 'organizations', 'url']],
         on_select="rerun",
         selection_mode="single-row",
         key="article_selector_df",
@@ -196,7 +200,7 @@ def init_app():
         column_config={
             "timestamp": st.column_config.DatetimeColumn("Time (UTC)", format="D MMM, h:mmA"),
             "summary": "Article Summary",
-            "sentiment": st.column_config.NumberColumn("Sentiment", format="%.2f"),
+            
             "people": "People",
             "organizations": "Organizations",
             "url": st.column_config.LinkColumn("Source")
@@ -216,7 +220,7 @@ def init_app():
 
             with st.expander("Deep Dive: Selected Article", expanded=True):
                 st.markdown(f"**Full Summary:** {article_details['summary']}")
-                st.markdown(f"**Sentiment Score:** {article_details['sentiment']:.2f}")
+                #st.markdown(f"**Sentiment Score:** {article_details['sentiment']:.2f}")
 
 
                 if 'highlights' in article_details and article_details['highlights']:
