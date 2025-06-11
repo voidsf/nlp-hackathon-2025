@@ -167,6 +167,9 @@ def filter_articles_by_time(dataframe:pd.DataFrame, start_date):
     else:
         dataframe['timestamp'] = dataframe['timestamp'].dt.tz_convert(london_tz)
 
+    if start_date.tzinfo is None:
+        start_date = london_tz.localize(start_date)
+
     # Filter the DataFrame for articles within the specified time period
     filtered_df = dataframe[dataframe['timestamp'] >= start_date].copy()
     return filtered_df.sort_values(by='timestamp', ascending=True)
