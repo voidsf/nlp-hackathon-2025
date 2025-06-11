@@ -6,8 +6,9 @@ import sentiment
 from sentiment import package_articles_with_sentiment_info
 
 @st.cache_data
-def get_display_data():
-    df = fetch_or_retrieve_cached_data("AI Regulation", 50)
+def get_display_data(query):
+    df = fetch_or_retrieve_cached_data(query, 50)
+    print(df)
     clean_articles(df)
     package_articles_with_sentiment_info(df)
 
@@ -18,17 +19,25 @@ def get_display_data():
 def init_app():
     st.set_page_config(layout="wide")
 
-    df = get_display_data()
 
     st.title("Event Unfolder: A Real-Time Story Tracker ⏳")
 
     st.sidebar.header("Filter by Entities")
 
+    search_bar = st.sidebar.text_input("Search:", "")
+    if search_bar:
+        df = get_display_data(search_bar)
+    else:
+        df = get_display_data("Cake recipes")
+
+
+
     print(df['people'])
     print(df['organizations'])
-
     all_people = df['people'].explode().dropna().unique().tolist()
     all_orgs = df['organizations'].explode().dropna().unique().tolist()
+
+
 
     selected_people = st.sidebar.multiselect("Select people to focus on:", all_people)
     selected_orgs = st.sidebar.multiselect("Select organizations to focus on:", all_orgs)

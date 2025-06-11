@@ -18,15 +18,15 @@ def sentiment_category(score):
     Categorizes the VADER compound score into sentiment groups.
     """
     if score <= -0.6:
-        return "very negative"
+        return -2
     elif score < -0.2:
-        return "negative"
+        return -1
     elif score <= 0.2:
-        return "neutral"
+        return 0
     elif score < 0.6:
-        return "positive"
+        return 1
     else:
-        return "very positive"
+        return 2
 
 def analyze_sentiment(dataframe: pd.DataFrame):
     """
